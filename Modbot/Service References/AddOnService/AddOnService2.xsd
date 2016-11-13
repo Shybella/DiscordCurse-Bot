@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/Curse.AddOnService.Requests" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/Curse.AddOnService.Requests" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:complexType name="ArrayOfAddOnFileKey">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="AddOnFileKey" nillable="true" type="tns:AddOnFileKey" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfAddOnFileKey" nillable="true" type="tns:ArrayOfAddOnFileKey" />
+  <xs:complexType name="AddOnFileKey">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="AddOnID" type="xs:int" />
+      <xs:element minOccurs="0" name="FileID" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="AddOnFileKey" nillable="true" type="tns:AddOnFileKey" />
+</xs:schema>
