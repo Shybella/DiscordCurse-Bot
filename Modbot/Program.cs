@@ -16,7 +16,7 @@ namespace Modbot
 {
     class Program
     {
-        string version = "1.0.0";
+        string version = "1.0.1";
 
         private static LoginService.ClientLoginServiceClient loginService = new LoginService.ClientLoginServiceClient("BinaryHttpsClientLoginServiceEndpoint");
         private static AddOnService.AddOnServiceClient addOnService = new AddOnService.AddOnServiceClient("BinaryHttpAddOnServiceEndpoint");
@@ -100,7 +100,7 @@ namespace Modbot
             cService.CreateCommand("find")
                 .Parameter("modid", ParameterType.Required)
                 .Parameter("arg", ParameterType.Optional)
-                .Description("Example: -find 64578 description | Parameters: description, files")
+                .Description("Example: -find 64578 description | Parameters: description, files, changelog")
                 .Do(async (e) =>
                 {
                     int x = Convert.ToInt32(e.Args[0]);
@@ -136,11 +136,24 @@ namespace Modbot
 
                         foreach (var f in files)
                         {
-                            string mod = string.Format("Latest File: {0}, {1}, {2}, {3}", f.Id, f.FileDate, f.FileName, f.DownloadURL);
+                            string mod = string.Format("Latest File: {0}, {1}, {2}, {3}, Status: {4}", f.Id, f.FileDate, f.FileName, f.DownloadURL, f.ReleaseType);
                             await e.Channel.SendMessage(mod);
                         }
                     }
 
+                    else if(e.GetArg("arg") == "changelog")
+                    {
+                        var addOn = addOnService.GetAddOn(x);
+                        var files = addOn.LatestFiles;
+
+                        foreach (var f in files)
+                        {
+                            var changelog = addOnService.GetChangeLog(addOn.Id, f.Id);
+                            string cleaned = RemoveTags(changelog);
+                            await e.Channel.SendMessage(f.FileName + Environment.NewLine + cleaned);     
+                        }
+
+                    }
                 });
         }
 
@@ -168,7 +181,7 @@ namespace Modbot
 
         public static string RemoveTags(string html)
         {
-            var virgin = Regex.Replace(html, @"<[^>]+>|&nbsp;", "").Trim();
+            var virgin = Regex.Replace(html, @"<[^>]+>|&nbsp;|&mdash;", "").Trim();
             var notanymore = Regex.Replace(virgin, @"\s{2,}", " ");
             return notanymore;
         }
