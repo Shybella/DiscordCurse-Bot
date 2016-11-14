@@ -32,6 +32,9 @@ namespace Modbot
 
         public void Start()
         {
+            // Curse Login
+            // var username = ""
+            // var password = ""
 
             // First you must authenticate if successful, the response will contain the authentication token
             var loginResponse = loginService.Login(new LoginService.LoginRequest()
@@ -72,6 +75,8 @@ namespace Modbot
                 x.HelpMode = HelpMode.Public;
             });
 
+            // Discord Bot Token
+            // var discordtoken = ""
 
             Commands();
             
