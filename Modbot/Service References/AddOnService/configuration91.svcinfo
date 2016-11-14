@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<SavedWcfConfigurationInformation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="9.1" CheckSum="iUQ28UbJ42mlawK8AJDG5qiluZI=">
+<SavedWcfConfigurationInformation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="9.1" CheckSum="AsA0syBWFKQovDy4v/gqLBC2Krc=">
   <bindingConfigurations>
     <bindingConfiguration bindingType="customBinding" name="BinaryHttpAddOnServiceEndpoint">
       <properties>
@@ -517,10 +517,10 @@
         </property>
       </properties>
     </endpoint>
-    <endpoint name="BinaryHttpsAddOnServiceEndpoint" contract="AddOnService.IAddOnService" bindingType="customBinding" address="https://iis32c-live.curse.us/AddOnService.svc/binary" bindingConfiguration="BinaryHttpsAddOnServiceEndpoint">
+    <endpoint name="BinaryHttpsAddOnServiceEndpoint" contract="AddOnService.IAddOnService" bindingType="customBinding" address="https://iis32b-live.curse.us/AddOnService.svc/binary" bindingConfiguration="BinaryHttpsAddOnServiceEndpoint">
       <properties>
         <property path="/address" isComplexType="false" isExplicitlyDefined="true" clrType="System.Uri, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>https://iis32c-live.curse.us/AddOnService.svc/binary</serializedValue>
+          <serializedValue>https://iis32b-live.curse.us/AddOnService.svc/binary</serializedValue>
         </property>
         <property path="/behaviorConfiguration" isComplexType="false" isExplicitlyDefined="false" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />

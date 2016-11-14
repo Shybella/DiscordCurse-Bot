@@ -413,9 +413,9 @@
       </wsa10:EndpointReference>
     </wsdl:port>
     <wsdl:port name="BinaryHttpsAddOnServiceEndpoint" binding="i0:BinaryHttpsAddOnServiceEndpoint">
-      <soap12:address location="https://iis32c-live.curse.us/AddOnService.svc/binary" />
+      <soap12:address location="https://iis32b-live.curse.us/AddOnService.svc/binary" />
       <wsa10:EndpointReference>
-        <wsa10:Address>https://iis32c-live.curse.us/AddOnService.svc/binary</wsa10:Address>
+        <wsa10:Address>https://iis32b-live.curse.us/AddOnService.svc/binary</wsa10:Address>
       </wsa10:EndpointReference>
     </wsdl:port>
     <wsdl:port name="WsHttpAddOnServiceEndpoint" binding="i0:WsHttpAddOnServiceEndpoint">
