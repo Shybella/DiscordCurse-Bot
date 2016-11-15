@@ -16,22 +16,24 @@ namespace Modbot
 {
     class Program
     {
-        string version = "1.0.1";
+        string version = "1.0.2";
 
         private static LoginService.ClientLoginServiceClient loginService = new LoginService.ClientLoginServiceClient("BinaryHttpsClientLoginServiceEndpoint");
         private static AddOnService.AddOnServiceClient addOnService = new AddOnService.AddOnServiceClient("BinaryHttpAddOnServiceEndpoint");
 
         static void Main(string[] args)
         {
-
-            new Program().Start();
-
+            new Program().Start();            
         }
 
         private DiscordClient _client;
 
         public void Start()
         {
+            Feed f = new Feed();
+
+            f.Start();
+
             // Curse Login
             // var username = ""
             // var password = ""
@@ -97,6 +99,36 @@ namespace Modbot
                     await e.Channel.SendMessage("Bot version: " + version);
                 });
 
+            cService.CreateCommand("search")
+                .Description("Search for mod IDs by name")
+                .Parameter("text", ParameterType.Unparsed)
+                .Do(async (e) =>
+                {
+                    Feed f = new Feed();
+                    string searchtext = e.GetArg("text");
+
+                    IList<string> modids = new List<string>();
+
+                    int y = 0;
+                    foreach (var id in f.Search(searchtext))
+                    {
+                        modids.Add(id);
+                        y = y + 1;
+                    }
+                    await e.Channel.SendMessage("You searched for " + searchtext + " found " + y + " results");
+
+                    string modids_cleaned = string.Join(", \n", modids);
+
+                    if (modids.Count < 1)
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        await e.Channel.SendMessage("```" + modids_cleaned + "```");
+                    }
+                });
+
             cService.CreateCommand("find")
                 .Parameter("modid", ParameterType.Required)
                 .Parameter("arg", ParameterType.Optional)
@@ -111,13 +143,12 @@ namespace Modbot
                         await e.Channel.SendMessage(result);
                     }
 
-                    if (e.GetArg("arg") == "description")
-                    {
-                        
+                    else if (e.GetArg("arg") == "description")
+                    {                      
                         var addOn = addOnService.GetAddOn(x);
                         var description = addOnService.GetAddOnDescription(addOn.Id);
                         string cleaned = RemoveTags(description);
-                        await e.Channel.SendMessage(cleaned);
+                        await e.Channel.SendMessage("```" + cleaned + "```");
                     }
 
                     else if (e.GetArg("arg") == "files")
@@ -132,11 +163,11 @@ namespace Modbot
                             total = total + 1;
                         }
 
-                        await e.Channel.SendMessage("Total Files Found: " + total);
+                        await e.Channel.SendMessage("```Total Files Found: " + total + "```");
 
                         foreach (var f in files)
                         {
-                            string mod = string.Format("Latest File: {0}, {1}, {2}, {3}, Status: {4}", f.Id, f.FileDate, f.FileName, f.DownloadURL, f.ReleaseType);
+                            string mod = string.Format("```Latest File: {0}, {1}, {2}, {3}, Status: {4}```", f.Id, f.FileDate, f.FileName, f.DownloadURL, f.ReleaseType);
                             await e.Channel.SendMessage(mod);
                         }
                     }
@@ -150,9 +181,8 @@ namespace Modbot
                         {
                             var changelog = addOnService.GetChangeLog(addOn.Id, f.Id);
                             string cleaned = RemoveTags(changelog);
-                            await e.Channel.SendMessage(f.FileName + Environment.NewLine + cleaned);     
+                            await e.Channel.SendMessage("```" + f.FileName + " - "+ Environment.NewLine + cleaned + "```");     
                         }
-
                     }
                 });
         }
@@ -162,20 +192,31 @@ namespace Modbot
             Console.WriteLine($"[{e.Severity}] [{e.Source}] {e.Message}");
         }              
    
-
         public string GetAddoninfo(int id)
         {
             var addOn = addOnService.GetAddOn(id);
             var authors = addOn.Authors;
+            var categories = addOn.Categories;
 
-            StringBuilder author_list = new StringBuilder();
+            IList<string> author_names = new List<string>();
+            IList<string> categorie_names = new List<string>();
 
             foreach (var a in authors)
             {
-                author_list.AppendLine(a.Name); 
+                author_names.Add(a.Name);
             }
-                      
-            string modinfo = string.Format("Addon: ID: {0}, Name: {1}, Summary: {2}, Authors: {3}", addOn.Id, addOn.Name, addOn.Summary, author_list);
+
+            foreach(var a in categories)
+            {
+                categorie_names.Add(a.Name);
+            }
+
+            string authornames_joined = string.Join(", ", author_names);
+            string categorienames_joined = string.Join(", ", categorie_names);
+
+            string modinfo = string.Format
+                ("```Addon: ID: {0}\nName: {1}\nSummary: {2}\nAuthors: {3} \nUrl: {4} \nCategories: {5} \nDownloads: {6}```", 
+                addOn.Id, addOn.Name, addOn.Summary, authornames_joined, addOn.WebSiteURL, categorienames_joined, addOn.DownloadCount);
             return modinfo;
         }
 
@@ -185,6 +226,5 @@ namespace Modbot
             var notanymore = Regex.Replace(virgin, @"\s{2,}", " ");
             return notanymore;
         }
-
     }
 }
